@@ -1,0 +1,13 @@
+[package]
+
+name = "quokka"
+version = "0.0.1"
+authors = ["Artyom Keydunov <artyom.keydunov@gmail.com>"]
+
+[dependencies]
+iron = "*"
+router = "*"
+rustc-serialize = "*"
+
+[dependencies.jsonway]
+path = "src/jsonway"
