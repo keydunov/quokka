@@ -11,3 +11,6 @@ rustc-serialize = "*"
 
 [dependencies.jsonway]
 path = "src/jsonway"
+
+#[dependencies.logger]
+#path = "../logger"

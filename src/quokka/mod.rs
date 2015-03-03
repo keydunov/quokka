@@ -23,7 +23,6 @@ impl Application {
     }
 }
 
-
 impl Handler for Application {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
         self.router.handle(req)
@@ -31,5 +30,6 @@ impl Handler for Application {
 }
 
 pub fn run(app: Application) {
-    Iron::new(app).listen("localhost:3000");
+    Iron::new(app).listen("localhost:3000").unwrap();
+    println!("Quokka starting on http:://localhost:3000");
 }
