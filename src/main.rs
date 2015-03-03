@@ -17,9 +17,9 @@ mod models;
 fn main() {
     let mut app = Application::new();
 
-    app.get("/api/apps", |&: _: &mut Request| {
+    app.get("/api/apps", |req, res| {
         let app = app::App { name: "Happy Numbers".to_string() };
-        Ok(Response::with((status::Ok, app_serializer::AppSerializer.serialize(&app, true).to_string())))
+        res.send(app_serializer::AppSerializer.serialize(&app, true).to_string())
     });
 
     quokka::run(app);

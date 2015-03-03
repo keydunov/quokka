@@ -4,28 +4,57 @@ use router::Router;
 
 use iron::typemap::Key;
 
-pub struct Application {
-    router: Router
+pub struct TestRequest;
+pub struct TestResponse {
+    data: Option<String>
 }
+
+impl TestResponse {
+    pub fn send(&mut self, response: String) {
+        self.data = Some(response);
+    }
+}
+
+pub type EndpointHandler = Box<Fn(TestRequest, &mut TestResponse) + 'static + Sync>;
+
+pub struct Application {
+    router: Router,
+    handler: Option<EndpointHandler>
+}
+
+unsafe impl Send for Application {}
 
 impl Application {
     pub fn new() -> Application {
         Application {
-            router: Router::new()
+            router: Router::new(),
+            handler: None
         }
     }
 
-    pub fn get<H: Handler, S: Str>(&mut self, path: S, handler: H) {
-        self.router.get(path, handler);
+    pub fn listen(&self) {
     }
 
-    pub fn listen(&self) {
+    pub fn get<F: 'static, S: Str>(&mut self, path: S, handler: F)
+    where F: Fn(TestRequest, &mut TestResponse) + Sync {
+        self.handler = Some(Box::new(handler));
+    }
+
+    fn call(&self, req: &mut Request) -> IronResult<Response> {
+        let request = TestRequest;
+        let mut response = TestResponse { data: None };
+        let handler = self.handler.as_ref();
+        (handler.unwrap())(request, &mut response);
+        match response.data {
+            Some(string) => Ok(Response::with((status::Ok, string))),
+            None => Ok(Response::with((status::Ok, "None".to_string()))),
+        }
     }
 }
 
 impl Handler for Application {
     fn handle(&self, req: &mut Request) -> IronResult<Response> {
-        self.router.handle(req)
+        self.call(req)
     }
 }
 
