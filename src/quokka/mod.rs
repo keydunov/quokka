@@ -32,9 +32,6 @@ impl Application {
         }
     }
 
-    pub fn listen(&self) {
-    }
-
     pub fn get<F: 'static, S: Str>(&mut self, path: S, handler: F)
     where F: Fn(TestRequest, &mut TestResponse) + Sync {
         self.handler = Some(Box::new(handler));

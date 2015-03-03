@@ -3,8 +3,6 @@ extern crate router;
 extern crate jsonway;
 extern crate "rustc-serialize" as rustc_serialize;
 
-use iron::{Request, Response};
-use iron::status;
 use quokka::Application;
 use serializers::app_serializer;
 use models::app;
